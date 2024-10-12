@@ -6,7 +6,8 @@
     <title>Goldbarber Shop</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -14,22 +15,27 @@
 
         :root {
             --color-background: #fcf8f3;
-            --color-primary: #e6b12e; /* Gold color */
+            --color-primary: rgb(234 179 8); /* Gold color */
             --color-border: #333; /* Dark gray for borders */
             --color-white: #ffffff; /* White */
             --color-black: #000000; /* Black */
+            --color-transparent: rgba(0, 0, 0, 0);
         }
 
         body {
             background-color: var(--color-background);
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Prevent scrolling during preloader */
-            display: flex;
+            width: 100vw;
+            max-width: 100%;
             justify-content: center;
             align-items: center;
             height: 100vh;
             position: relative; /* For absolute positioning of elements */
+        }
+
+        .no-scroll {
+            overflow: hidden;
         }
 
         /* Barber pole styling */
@@ -108,41 +114,95 @@
         }
 
         nav {
-            background: var(--color-white);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background: var(--color-transparent);
         }
 
         .nav-link {
-            font-family: 'Lobster', cursive;
-            color: var(--color-border);
-            padding: 10px 15px;
+            font-family: 'Roboto', sans-serif;
+            color: var(--color-white);
+            padding: 10px 30px; /* Increase padding for better spacing */
             border-radius: 5px;
+            text-align: center; /* Center the text inside the link */
+            width: 100%; /* Make links take full width in mobile menu */
             transition: background-color 0.3s, color 0.3s;
         }
 
+        .nav-link-button {
+            color: var(--color-white);
+            background-color: #eab308 !important;
+        }
+
+        .nav-link-button:hover {
+            color: var(--color-white) !important;
+            background-color: #ca8a04 !important;
+        }
+
         .nav-link:hover {
-            background-color: var(--color-primary);
-            color: var(--color-black); /* Change text color to black on hover */
+            background-color: rgb(202 138 4) !important;
         }
 
         h1, p {
             font-family: 'Roboto', sans-serif;
         }
 
-        /* Hide mobile menu initially */
         .mobile-menu {
-            display: none;
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; /* Center items vertically */
+            background-color: rgba(0, 0, 0, 0.9);
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0;
+            z-index: 20;
+            padding: 20px 0; 
         }
 
-        /* Mobile styles */
-        @media (max-width: 768px) {
-            .mobile-menu {
-                display: none; /* Hide menu by default */
-            }
+        .close-button {
+            position: absolute; /* Position it in the top right */
+            top: 20px; 
+            right: 20px; 
+            background: transparent; 
+            border: none; 
+            color: var(--color-white); 
+            font-size: 24px; 
+            cursor: pointer; 
+        }
 
-            .mobile-menu.active {
-                display: block; /* Show menu when active */
+        .mobile-menu li {
+            margin: 10px 0; /* Add vertical spacing between menu items */
+        }
+
+        .mobile-menu.active {
+            display: flex; /* Show mobile menu when active */
+        }
+
+        @media (max-width: 768px) {
+            .desktop-menu {
+                display: none; /* Hide desktop menu on mobile */
             }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-menu {
+                display: none; /* Hide mobile menu on desktop */
+            }
+        }
+
+        /* Animation for slide-down effect */
+        @keyframes slideDown {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .mobile-menu.active {
+            animation: slideDown 0.3s ease-in-out; /* Slide down the mobile menu */
         }
     </style>
 </head>
@@ -152,28 +212,48 @@
         <div class="barber-pole-bottom"></div>
     </div>
 
-    <!-- Your main content goes here -->
+    <!-- Main content -->
     <div id="main-content" style="display: none;">
         <nav class="flex items-center justify-between p-4 absolute w-full top-0 left-0 z-10">
-            <img src="<?php echo '/images/logo.png'; ?>" alt="Gold Barbershop Logo" class="h-10 mr-4" />
-            <div class="flex items-center">
-                <!-- Hamburger Icon -->
-                <button id="hamburger" class="block lg:hidden focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                    </svg>
-                </button>
-                <!-- Navigation Links -->
-                <ul class="flex space-x-8 mobile-menu lg:flex lg:space-x-8">
-                    <li><a href="/" class="nav-link">Domů</a></li>
-                    <li><a href="/sluzby" class="nav-link">Služby</a></li>
-                    <li><a href="/o-nas" class="nav-link">O nás</a></li>
-                    <li><a href="/kontakt" class="nav-link">Kontakt</a></li>
-                </ul>
-            </div>
+            <a href="/" class="flex items-center">
+                <img src="<?php echo '/images/logo.png'; ?>" alt="Gold Barbershop Logo" class="h-10 mr-4" />
+            </a>
+
+            <!-- Desktop Menu -->
+            <ul class="desktop-menu flex space-x-8">
+                <li><a href="/" class="nav-link">Domů</a></li>
+                <li><a href="/sluzby" class="nav-link">Služby</a></li>
+                <li><a href="/o-nas" class="nav-link">O nás</a></li>
+                <li><a href="/kontakt" class="nav-link">Kontakt</a></li>
+                <li><a href="/order" class="nav-link nav-link-button">Objednat</a></li>
+            </ul>
+
+            <!-- Hamburger Icon for Mobile -->
+            <button id="hamburger" class="block lg:hidden focus:outline-none pr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="white">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
         </nav>
-        <h1 class="text-3xl font-semibold mt-16 text-center">Vítejte v Gold Barbershopu!</h1>
-        <p class="mt-4 text-center">Vaše obsah zde.</p>
+
+        <!-- Mobile Menu -->
+        <ul class="mobile-menu lg:hidden">
+            <button class="close-button" id="close-button">&times;</button> <!-- Close button -->
+            <li><a href="/" class="nav-link">Domů</a></li>
+            <li><a href="/sluzby" class="nav-link">Služby</a></li>
+            <li><a href="/o-nas" class="nav-link">O nás</a></li>
+            <li><a href="/kontakt" class="nav-link">Kontakt</a></li>
+            <li><a href="/order" class="nav-link nav-link-button">Objednat</a></li>
+        </ul>
+
+        <!-- Includes -->
+        @include('components.hero')
+        @include('components.services-offered')
+        @include('components.meet-our-barbers')
+        @include('components.testimonials')
+        @include('components.gallery')
+        @include('components.booking-section')
+        @include('components.footer')
     </div>
 
     <script>
@@ -197,7 +277,15 @@
         const mobileMenu = document.querySelector(".mobile-menu");
 
         hamburger.addEventListener("click", () => {
-            mobileMenu.classList.toggle("active");
+            mobileMenu.classList.toggle("active"); // Toggle active class to show/hide menu
+            document.body.classList.toggle("no-scroll"); // Disable/enable scroll
+        });
+
+        const closeButton = document.getElementById("close-button");
+
+        closeButton.addEventListener("click", () => {
+            mobileMenu.classList.remove("active"); // Hide mobile menu
+            document.body.classList.remove("no-scroll"); // Enable scroll
         });
     </script>
 </body>
